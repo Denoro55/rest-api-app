@@ -2,6 +2,8 @@ const express = require('express');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+const sequelize = require('./utils/database');
+
 // routes
 const todoRoutes = require('./routes/todo');
 
@@ -15,6 +17,15 @@ app.use((req, res, next) => {
     res.sendFile('/index.html');
 });
 
-app.listen(PORT, () => {
-    console.log('server is listening on port ', PORT);
-});
+async function start() {
+    try {
+        await sequelize.sync();
+        app.listen(PORT, () => {
+            console.log('server is listening on port ', PORT);
+        });
+    } catch (e) {
+        console.log(e)
+    }
+}
+
+start();
